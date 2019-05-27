@@ -1,3 +1,16 @@
+/** 
+* @file         test_precisiontime.c 
+* @brief        This is a test how to use time.
+* @details  	This is a test how to use time.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 /*函数time头文件*/
 #include<time.h>
 /*函数gettimeofday和settimeofday的头文件*/
@@ -8,13 +21,16 @@ int function()
 { 
 	 unsigned int i,j; 
 	 double y; 
-	 for(i=0;i<1000;i++) 
-	 for(j=0;j<1000;j++) 
-	 y=i/(j+1); //耗时操作
+	 for(i=0;i<1000;i++)
+	 {
+		 for(j=0;j<1000;j++) 
+		 y=i/(j+1); //耗时操作
+	 } 
+	 
 	 return y;
 } 
 
-int main(int argc,char *argv[]) 
+int main(int argc,const char *argv[]) 
 { 
 	struct timeval tpstart,tpend; 
 	float timeuse; 
@@ -29,4 +45,6 @@ int main(int argc,char *argv[])
 	timeuse /= 1000000; 
 	
 	printf("Used Time:%fs!\n",timeuse); 
+
+	return 0;
 }

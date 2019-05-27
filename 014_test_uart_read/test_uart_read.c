@@ -1,3 +1,16 @@
+/** 
+* @file         test_uart_read.c 
+* @brief        This is a test how to use uart read.
+* @details  	This is a test how to use uart read.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -7,10 +20,10 @@
 #include <termios.h>
 #include <errno.h>
 
-int set_opt(int,int,int,char,int);
+int set_opt(int fd,int nSpeed, int nBits, char nEvent, int nStop);
 /* "/dev/ttySAC3"是con2，靠近耳机接口的串口 */
 
-int main(int argc,char *argv[])
+int main(int argc,const char *argv[])
 {
 	int fd,nByte;
 	char *uart3 = "/dev/ttySAC3";

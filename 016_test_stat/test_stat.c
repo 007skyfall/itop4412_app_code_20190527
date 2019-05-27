@@ -1,11 +1,33 @@
+/** 
+* @file         test_stat.c 
+* @brief        This is a test how to use stat.
+* @details  	This is a test how to use stat.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
-//通过man文档可以查看到stat函数组头文件
+#include <string.h>
+#include <unistd.h>
 #include <sys/types.h>
 #include <sys/stat.h>
-#include <unistd.h>
-
-//open函数的参数头文件
 #include <fcntl.h>
+#include <termios.h>
+#include <errno.h>
+#include <stdlib.h>
+
+
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
 
 #if 0
 	
@@ -35,7 +57,7 @@ struct stat {
            };
 #endif
 
-int main(int argc,char *argv[])
+int main(int argc,const char *argv[])
 {
 	struct stat groupstat;
 	int fd,ret;
@@ -46,7 +68,7 @@ int main(int argc,char *argv[])
 		return 1;
 	}
 
-//stat函数测试	
+//stat鍑芥暟	
 	ret = stat(argv[1],&groupstat);
 	if(ret)
 	{
@@ -56,7 +78,7 @@ int main(int argc,char *argv[])
 	printf("stat function test, %s of st_ino inode is %ld\n",argv[1],groupstat.st_ino);
 	printf("stat function test, %s of st_size size is %ld\n",argv[1],groupstat.st_size);
 	
-//fstat函数测试
+//fstat鍑芥暟
 	fd = open(argv[1],O_RDWR|O_NOCTTY|O_NDELAY);
 	if(fd<0)
 	{
@@ -72,7 +94,7 @@ int main(int argc,char *argv[])
 	printf("fstat function test, %s of st_ino  inode is %ld\n",argv[1],groupstat.st_ino);
 	printf("fstat function test, %s of st_size size is %ld\n",argv[1],groupstat.st_size);
 
-//lstat函数测试	
+//lstat鍑芥暟
 	ret = lstat(argv[1],&groupstat);
 	if(ret)
 	{
@@ -81,6 +103,8 @@ int main(int argc,char *argv[])
 	}
 	printf("lstat function test, %s of st_ino inode is %ld\n",argv[1],groupstat.st_ino);
 	printf("lstat function test, %s of st_size size is %ld\n",argv[1],groupstat.st_size);
+	
+	close(fd);
 	
 return 0;
 }

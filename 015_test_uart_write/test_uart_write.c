@@ -1,3 +1,16 @@
+/** 
+* @file         test_uart_write.c 
+* @brief        This is a test how to use uart write.
+* @details  	This is a test how to use uart write.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -6,10 +19,19 @@
 #include <fcntl.h>
 #include <termios.h>
 #include <errno.h>
+#include <stdlib.h>
 
-int set_opt(int,int,int,char,int);
 
-int main(int argc,char *argv[])
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
+
+int set_opt(int fd,int nSpeed, int nBits, char nEvent, int nStop);
+
+int main(int argc,const char *argv[])
 {
 	int fd,wr_static,i=10;
 	char *uart3 = "/dev/ttySAC3";
@@ -17,9 +39,9 @@ int main(int argc,char *argv[])
 	
 	printf("\r\nitop4412 uart3 writetest start\r\n");
 	
-	if((fd = open(uart3, O_RDWR|O_NOCTTY|O_NDELAY))<0)
+	if((fd = open(uart3, O_RDONLY|O_NOCTTY|O_NDELAY))<0)
 	{
-		printf("open %s is failed",uart3);
+		errlog("open uart3");
 	}
 	else
 	{

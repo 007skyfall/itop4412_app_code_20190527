@@ -25,13 +25,6 @@
 #include <time.h>
 
 
-#define errlog(errmsg) do{\
-							perror(errmsg);\
-							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
-							exit(1);\
-						 }while(0)
-
-
 int main(int argc,const char *argv[])
 {
 	time_t timep;
