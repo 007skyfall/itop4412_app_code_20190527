@@ -1,3 +1,16 @@
+/** 
+* @file         test_adc.c 
+* @brief        This is a test about adc.
+* @details  	This is a test about adc.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
@@ -10,7 +23,13 @@
 #include <termios.h>
 #include <sys/ioctl.h>
 
-int main(int argc,char *argv[])
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
+int main(int argc,const char *argv[])
 {
 	int fd;
 	char *adc = "/dev/adc";
@@ -20,9 +39,11 @@ int main(int argc,char *argv[])
 	memset(buffer,0,sizeof(buffer));
 	printf("adc is ready!\n");
 	
-	if((fd = open(adc, O_RDWR|O_NOCTTY|O_NDELAY))<0)
-		printf("open adc err!\n");
-	
+	if((fd = open(adc, O_RDONLY|O_NOCTTY|O_NDELAY)) < 0)
+	{
+		errlog("open adc");
+	}
+
 	else
 	{
 		printf("open adc success!\n");
@@ -39,7 +60,10 @@ int main(int argc,char *argv[])
 		}			
 	}
 	
+	close(fd);
+
 return 0;
+
 }
 
 

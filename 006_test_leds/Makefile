@@ -1,13 +1,16 @@
-CC=gcc 
+src = $(wildcard *.c)
+targets = $(patsubst %.c, %, $(src))
+
+CC = gcc
 STRIP=strip
-OBJ=test_leds
-OBJS=test_leds.c 
-CFLAGS= -Wall -g -lm 
-$(OBJ):$(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
+CFLAGS = -Wall -g 
+
+all:$(targets)
+
+$(targets):%:%.c
+	$(CC) $< -o $@ $(CFLAGS)
 	$(STRIP) $@
-$*.o:$%.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
-.PHONY:clean
+
+.PHONY:clean all
 clean:
-	$(RM) *.o test_leds
+	-rm -rf $(targets) 

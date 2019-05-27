@@ -1,45 +1,90 @@
-//标准输入输出头文件
+/** 
+* @file         test_creat.c 
+* @brief        This is a test how to use creat API.
+* @details  	This is a test how to use creat API.
+* @author       skyfall
+* @date     	2019.05.27 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
-//文件操作函数头文件
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-int main(int argc,char * argv[])
+#include <unistd.h>
+#include <stdlib.h>
+
+
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
+int main(int argc,const char * argv[])
 {
-	int fd;
-	char *leds = "./test.txt";
-	char *test1 = "home/skyfall/test1";
-	char *test2 = "home/skyfall/test2";
+	int fd[4] = {0};
+	char *leds = "./leds";
+	char *test1 = "./test1";
+	char *test2 = "./test2";
+
 	//需要新建的文件test3
 	char *test3 = "./test3";
-	
+
+	# if 0
 	//使用open函数打开文件
-	if((fd = open(leds, O_RDWR|O_NOCTTY|O_NDELAY))<0)
+	if((fd[0] = open(leds, O_RDWR|O_NOCTTY|O_NDELAY))<0)
 	{
-		printf("open %s is failed\n",leds); 
-	}
-		printf("%s fd is %d\n",leds,fd);
-	
-	//使用open函数打开不存在的文件，不添加O_CREAT标识符，会报错
-	if((fd = open(test1, O_RDWR))<0)
-	{
-		printf("open %s failed\n",test1); 
-	}
-	//打开文件创建文件，添加标志位O_CREAT表示不存在这个文件则创建文件
-	if((fd = open(test2, O_RDWR|O_CREAT,0664))<0)
-	{
-		printf("open %s failed\n",test2); 
-	}
-		printf("%s fd is %d\n",test2,fd);
-	
-	fd = creat(test3,0777);
-	if(fd == -1)
-	{
-		printf("%s fd is %d\n",test3,fd);
+		errlog("open leds");
 	}
 	else
 	{
-		printf("create %s is succeed\n",test3);
+		printf("%s fd is %d\n",leds,fd[0]);
+	
 	}
+	
+	//使用open函数打开不存在的文件，不添加O_CREAT标识符，会报错
+	if((fd[1] = open(test1, O_RDWR))<0)
+	{
+		errlog("open test1");
+	}
+	else
+	{
+		printf("%s fd is %d\n",test1,fd[1]);
+	
+	}
+
+	#endif
+	
+	//打开文件创建文件，添加标志位O_CREAT表示不存在这个文件则创建文件
+	if((fd[2] = open(test2, O_RDWR|O_CREAT,0664))<0)
+	{
+		errlog("open test2");
+	}
+	else
+	{
+		printf("%s fd is %d\n",test2,fd[2]);
+	
+	}
+
+	if((fd[3] = creat(test3,0777))<0)
+	{
+		errlog("open test3");
+	}
+	else
+	{
+		printf("%s fd is %d\n",test3,fd[3]);
+	
+	}
+
+	for(int i = 0; i < 4; ++i)
+	{
+		close(fd[i]);
+	}
+
 return 0;
 }
