@@ -55,16 +55,15 @@ int main(int argc,const char *argv[])
 	printf("getwd pwd is %s\n",wd);
 	
 	current_dir = (char*)malloc(sizeof(char) * LENTH);
-	if(NULL ==current_dir)
+	if(NULL == current_dir)
 	{
 		errlog("get_current_dir_name");
 	}
 	
-	//current_dir = get_current_dir_name();
-	puts("aaaaa");
+	current_dir = get_current_dir_name();
+
 	puts(current_dir);
-	printf("get_current pwd is %s\n",current_dir);
-	puts("abbb");
+	printf("get_current_dir_name is %s\n",current_dir);
 	if(NULL != current_dir)
 	{
 		free(current_dir);

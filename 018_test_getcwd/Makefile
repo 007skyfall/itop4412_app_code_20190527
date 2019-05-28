@@ -3,7 +3,7 @@ targets = $(patsubst %.c, %, $(src))
 
 CC = gcc
 STRIP=strip
-CFLAGS = -Wall -g 
+CFLAGS = -Wall -g -D_GNU_SOURCE
 
 all:$(targets)
 

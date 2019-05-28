@@ -1,8 +1,27 @@
-#include <stdio.h>
-//rmdir函数头文件
-#include <unistd.h>
+/** 
+* @file         test_rmdir.c 
+* @brief        This is a test rmdir API.
+* @details  	This is a test rmdir API.
+* @author       skyfall
+* @date     	2019.05.28 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
 
-int main(int argc,char *argv[])
+#include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <termios.h>
+#include <errno.h>
+#include <stdlib.h>
+
+int main(int argc,const char *argv[])
 {
 	int ret;
 		
@@ -15,7 +34,7 @@ int main(int argc,char *argv[])
 //使用rmdir函数删除目录
 	ret = rmdir(argv[1]);
 	
-	if(ret<0)
+	if(ret < 0)
 	{
 		printf("rmdir %s failed!\n",argv[1]);
 		return 1;

@@ -1,3 +1,16 @@
+/** 
+* @file         test_copy_file.c 
+* @brief        This is a test copy_file.
+* @details  	This is a test copy_file.
+* @author       skyfall
+* @date     	2019.05.28 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
@@ -8,49 +21,51 @@
 //argv[1] is oldpath ; argv[2] is newpath
 #define LENTH 1024
 
-int main(int argc,char *argv[])
+int main(int argc,const char *argv[])
 {
 	int fd_src,fd_dst;
 	char buffer[LENTH];
-	char *old_file,*new_file;
+	const char *old_file,*new_file;
+	int read_len;
 	
 	old_file = argv[1];
 	new_file = argv[2];
 	
-	if(argc <3)
+	if(argc < 3)
 	{
-		printf("Please input file path\n");
-		return 1;
+		printf("usage %s src_file dst_file\n",argv[0]);
+		return -1;
 	}
 
-	//打开oldpath		
-	fd_src = open(old_file,O_RDWR);
-	if(fd_src<0)
+	
+	fd_src = open(old_file,O_RDONLY);
+	if(fd_src < 0)
 	{
 		printf("Please make sure file path\n");
-		return 1;
+		return -1;
 	}
 	
-	//打开newpath,如果没有则创建目标文件
-	fd_dst = open(new_file,O_RDWR|O_CREAT,0664);
-	if(fd_dst<0)
+	
+	fd_dst = open(new_file,O_RDWR|O_CREAT|O_TRUNC,0664);
+	if(fd_dst < 0)
 	{
 		printf("Please make sure file path\n");
-		return 1;
+		return -1;
 	}
 
-	//读和写操作
-	while(read(fd_src,buffer,LENTH))
+	
+	while((read_len = read(fd_src,buffer,LENTH))> 0)
 	{
-		write(fd_dst,buffer,strlen(buffer));
+		printf("read_len = %d\n",read_len);
+		write(fd_dst,buffer,read_len);
 	}
 	
-	//关闭文件
+	
 	close(fd_src);
 	close(fd_dst);
 	
-	printf("cp to finished!\n");
-	printf("cp %s to %s success!\n",old_file,new_file);
+	printf("cp to is finished!\n");
+	printf("cp %s to %s is success!\n",old_file,new_file);
 	
 	return 0;
 }
