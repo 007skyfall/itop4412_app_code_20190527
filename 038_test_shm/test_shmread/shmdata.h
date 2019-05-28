@@ -5,9 +5,9 @@
   
 struct shared_use_st  
 {  
-    //��Ϊһ����־����0����ʾ�ɶ���0��ʾ��д
+    //作为一个标志，非0：表示可读，0表示可写
 	int written;
-	//��¼д��Ͷ�ȡ���ı�	
+	//记录写入和读取的文本	
     char text[TEXT_SZ];  
 };  
   

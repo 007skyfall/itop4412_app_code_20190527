@@ -1,8 +1,28 @@
+/** 
+* @file         test_execls.c 
+* @brief        This is a test execls.
+* @details  	This is a test execls.
+* @author       skyfall
+* @date     	2019.05.28 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <stdio.h>
 #include <unistd.h>
 #include <stdlib.h>
 
-int main(int argc,char *argv[])
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
+
+int main(int argc,const char *argv[])
 {
 	char *arg[] = {"ls","-a",NULL};
 	
@@ -13,8 +33,7 @@ int main(int argc,char *argv[])
 		
 		if(execl("/bin/ls","ls","-a",NULL) == -1)
 		{
-			perror("execl error");
-			exit(1);
+			errlog("execl error");
 		}
 	}
 
@@ -39,8 +58,7 @@ int main(int argc,char *argv[])
 		
 		if(execlp("ls","ls","-a",NULL) == -1)
 		{
-			perror("execlp error");
-			exit(1);
+			errlog("execlp error");
 		}
 	}
 	
@@ -52,8 +70,7 @@ int main(int argc,char *argv[])
 		
 		if(execvp("ls",arg) == -1)
 		{
-			perror("execvp error");
-			exit(1);
+			errlog("execvp error");
 		}
 	}
 	
@@ -65,8 +82,7 @@ int main(int argc,char *argv[])
 		
 		if(execle("/bin/ls","ls","-a",NULL,NULL) == -1)
 		{
-			perror("execle error");
-			exit(1);
+			errlog("execle error");
 		}
 	}
 	
@@ -78,11 +94,10 @@ int main(int argc,char *argv[])
 		
 		if(execve("/bin/ls",arg,NULL) == -1)
 		{
-			perror("execve error");
-			exit(1);
+			errlog("execve error");
 		}
 	}
-	//加入小延时可以避免发生混乱的情况
+
 	usleep(20000);
 	
 return 0;

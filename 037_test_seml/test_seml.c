@@ -1,3 +1,16 @@
+/** 
+* @file         test_seml.c 
+* @brief        This is a test signal.
+* @details  	This is a test signal.
+* @author       skyfall
+* @date     	2019.05.28 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
 #include <unistd.h>  
 #include <sys/types.h>  
 #include <sys/stat.h>  
@@ -21,40 +34,40 @@ static void del_semvalue();
 static int semaphore_p();  
 static int semaphore_v();  
   
-int main(int argc, char *argv[])  
+int main(int argc, const char *argv[])  
 {  
     char message = 'X';  
     int i = 0;  
   
-    //´´½¨ĞÅºÅÁ¿  
+    //åˆ›å»ºä¿¡å·é‡  
     sem_id = semget((key_t)1234, 1, 0666 | IPC_CREAT);  
   
     if(argc > 1)  
     {  
-        //³ÌĞòµÚÒ»´Î±»µ÷ÓÃ£¬³õÊ¼»¯ĞÅºÅÁ¿  
+        //ç¨‹åºç¬¬ä¸€æ¬¡è¢«è°ƒç”¨ï¼Œåˆå§‹åŒ–ä¿¡å·é‡  
         if(!set_semvalue())  
         {  
             fprintf(stderr, "Failed to initialize semaphore\n");  
             exit(EXIT_FAILURE);  
         }  
-        //ÉèÖÃÒªÊä³öµ½ÆÁÄ»ÖĞµÄĞÅÏ¢£¬¼´Æä²ÎÊıµÄµÚÒ»¸ö×Ö·û  
+        //è®¾ç½®è¦è¾“å‡ºåˆ°å±å¹•ä¸­çš„ä¿¡æ¯ï¼Œå³å…¶å‚æ•°çš„ç¬¬ä¸€ä¸ªå­—ç¬¦  
         message = argv[1][0];  
         sleep(2);  
     }  
     for(i = 0; i < 10; ++i)  
     {  
-        //½øÈëÁÙ½çÇø  
+        //è¿›å…¥ä¸´ç•ŒåŒº  
         if(!semaphore_p())  
             exit(EXIT_FAILURE);  
-        //ÏòÆÁÄ»ÖĞÊä³öÊı¾İ  
+        //å‘å±å¹•ä¸­è¾“å‡ºæ•°æ®  
         printf("%c", message);  
-        //ÇåÀí»º³åÇø£¬È»ºóĞİÃßËæ»úÊ±¼ä  
+        //æ¸…ç†ç¼“å†²åŒºï¼Œç„¶åä¼‘çœ éšæœºæ—¶é—´  
         fflush(stdout);  
         sleep(rand() % 3);  
-        //Àë¿ªÁÙ½çÇøÇ°ÔÙÒ»´ÎÏòÆÁÄ»Êä³öÊı¾İ  
+        //ç¦»å¼€ä¸´ç•ŒåŒºå‰å†ä¸€æ¬¡å‘å±å¹•è¾“å‡ºæ•°æ®  
         printf("%c", message);  
         fflush(stdout);  
-        //Àë¿ªÁÙ½çÇø£¬ĞİÃßËæ»úÊ±¼äºó¼ÌĞøÑ­»·  
+        //ç¦»å¼€ä¸´ç•ŒåŒºï¼Œä¼‘çœ éšæœºæ—¶é—´åç»§ç»­å¾ªç¯  
         if(!semaphore_v())  
             exit(EXIT_FAILURE);  
         sleep(rand() % 2);  
@@ -65,7 +78,7 @@ int main(int argc, char *argv[])
   
     if(argc > 1)  
     {  
-        //Èç¹û³ÌĞòÊÇµÚÒ»´Î±»µ÷ÓÃ£¬ÔòÔÚÍË³öÇ°É¾³ıĞÅºÅÁ¿  
+        //å¦‚æœç¨‹åºæ˜¯ç¬¬ä¸€æ¬¡è¢«è°ƒç”¨ï¼Œåˆ™åœ¨é€€å‡ºå‰åˆ é™¤ä¿¡å·é‡  
         sleep(3);  
         del_semvalue();  
     }  
@@ -74,7 +87,7 @@ int main(int argc, char *argv[])
   
 static int set_semvalue()  
 {  
-    //ÓÃÓÚ³õÊ¼»¯ĞÅºÅÁ¿£¬ÔÚÊ¹ÓÃĞÅºÅÁ¿Ç°±ØĞëÕâÑù×ö  
+    //ç”¨äºåˆå§‹åŒ–ä¿¡å·é‡ï¼Œåœ¨ä½¿ç”¨ä¿¡å·é‡å‰å¿…é¡»è¿™æ ·åš  
     union semun sem_union;  
   
     sem_union.val = 1;  
@@ -85,7 +98,7 @@ static int set_semvalue()
   
 static void del_semvalue()  
 {  
-    //É¾³ıĞÅºÅÁ¿  
+    //åˆ é™¤ä¿¡å·é‡  
     union semun sem_union;  
   
     if(semctl(sem_id, 0, IPC_RMID, sem_union) == -1)  
@@ -94,7 +107,7 @@ static void del_semvalue()
   
 static int semaphore_p()  
 {  
-    //¶ÔĞÅºÅÁ¿×ö¼õ1²Ù×÷£¬¼´µÈ´ıP£¨sv£©  
+    //å¯¹ä¿¡å·é‡åšå‡1æ“ä½œï¼Œå³ç­‰å¾…Pï¼ˆsvï¼‰  
     struct sembuf sem_b;  
    sem_b.sem_num = 0;  
     sem_b.sem_op = -1;//P()  
@@ -109,7 +122,7 @@ static int semaphore_p()
   
 static int semaphore_v()  
 {  
-    //ÕâÊÇÒ»¸öÊÍ·Å²Ù×÷£¬ËüÊ¹ĞÅºÅÁ¿±äÎª¿ÉÓÃ£¬¼´·¢ËÍĞÅºÅV£¨sv£©  
+    //è¿™æ˜¯ä¸€ä¸ªé‡Šæ”¾æ“ä½œï¼Œå®ƒä½¿ä¿¡å·é‡å˜ä¸ºå¯ç”¨ï¼Œå³å‘é€ä¿¡å·Vï¼ˆsvï¼‰  
     struct sembuf sem_b;  
     sem_b.sem_num = 0;  
     sem_b.sem_op = 1;//V()  

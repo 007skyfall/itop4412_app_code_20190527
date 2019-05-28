@@ -1,52 +1,74 @@
-#include <unistd.h>  
+/** 
+* @file         sigset.c 
+* @brief        This is a test signal.
+* @details  	This is a test signal.
+* @author       skyfall
+* @date     	2019.05.28 
+* @version  	v1.0.0
+* @par Copyright (c):  
+*       		none
+* @par History:          
+*   			none
+**/
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h> 
 #include <signal.h>  
 #include <sys/types.h>  
-#include <stdlib.h>  
-#include <stdio.h>  
+
+#define errlog(errmsg) do{\
+							perror(errmsg);\
+							printf("%s -- %s -- %d\n", __FILE__, __func__, __LINE__);\
+							exit(1);\
+						 }while(0)
+
+
 
 void handler(int sig)  
 {  
     printf("Handler the signal %d\n", sig);  
 }  
   
-int main(void)  
+int main(int argc,const char* argv[])
 {  
-    sigset_t sigset;//ÓÃÓÚ¼ÇÂ¼ÆÁ±Î×Ö  
-    sigset_t ign;//ÓÃÓÚ¼ÇÂ¼±»×èÈûµÄĞÅºÅ¼¯  
+    sigset_t sigset;//ç”¨äºè®°å½•å±è”½å­—  
+    sigset_t ign;//ç”¨äºè®°å½•è¢«é˜»å¡çš„ä¿¡å·é›†  
     struct sigaction act; 
 	
-    //Çå¿ÕĞÅºÅ¼¯  
-    sigemptyset(&sigset);  //³õÊ¼»¯ĞÅºÅ¼¯
+    //æ¸…ç©ºä¿¡å·é›†  
+    sigemptyset(&sigset);  //åˆå§‹åŒ–ä¿¡å·é›†
     sigemptyset(&ign);  
-    //ÏòĞÅºÅ¼¯ÖĞÌí¼ÓĞÅºÅSIGINT  
+    //å‘ä¿¡å·é›†ä¸­æ·»åŠ ä¿¡å·SIGINT  
     sigaddset(&sigset, SIGINT);  
   
-    //ÉèÖÃ´¦Àíº¯ÊıºÍĞÅºÅ¼¯      
+    //è®¾ç½®å¤„ç†å‡½æ•°å’Œä¿¡å·é›†      
     act.sa_handler = handler;  
     sigemptyset(&act.sa_mask);  
     act.sa_flags = 0;  
     sigaction(SIGINT, &act, 0);  
   
     printf("Wait the signal SIGINT...\n");  
-    pause();//¹ÒÆğ½ø³Ì£¬µÈ´ıĞÅºÅ  
+    pause();//æŒ‚èµ·è¿›ç¨‹ï¼Œç­‰å¾…ä¿¡å·  
   
-    //ÉèÖÃ½ø³ÌÆÁ±Î×Ö£¬ÔÚ±¾ÀıÖĞÎªÆÁ±ÎSIGINT   
+    //è®¾ç½®è¿›ç¨‹å±è”½å­—ï¼Œåœ¨æœ¬ä¾‹ä¸­ä¸ºå±è”½SIGINT   
     sigprocmask(SIG_SETMASK, &sigset, 0);     
     printf("Please press Ctrl+c in 10 seconds...\n");  
     sleep(10); 
 	
-    //²âÊÔSIGINTÊÇ·ñ±»ÆÁ±Î  
+    //æµ‹è¯•SIGINTæ˜¯å¦è¢«å±è”½  
     sigpending(&ign);  
 	
     if(sigismember(&ign, SIGINT))  
         printf("The SIGINT signal has ignored\n"); 
 	
-    //ÔÚĞÅºÅ¼¯ÖĞÉ¾³ıĞÅºÅSIGINT  
+    //åœ¨ä¿¡å·é›†ä¸­åˆ é™¤ä¿¡å·SIGINT  
     sigdelset(&sigset, SIGINT);  
     printf("Wait the signal SIGINT...\n"); 
 	
-    //½«½ø³ÌµÄÆÁ±Î×ÖÖØĞÂÉèÖÃ£¬¼´È¡Ïû¶ÔSIGINTµÄÆÁ±Î  
-    //²¢¹ÒÆğ½ø³Ì  
+    //å°†è¿›ç¨‹çš„å±è”½å­—é‡æ–°è®¾ç½®ï¼Œå³å–æ¶ˆå¯¹SIGINTçš„å±è”½  
+    //å¹¶æŒ‚èµ·è¿›ç¨‹  
     sigsuspend(&sigset);  
   
     printf("The app will exit in 5 seconds!\n");  

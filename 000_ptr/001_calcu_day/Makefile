@@ -1,11 +1,17 @@
-CC=gcc 
-OBJ=calcu_day
-OBJS=calcu_day.c 
-CFLAGS= -Wall -g -static 
-$(OBJ):$(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
-$*.o:$%.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
-.PHONY:clean
+src = $(wildcard *.c)
+targets = $(patsubst %.c, %, $(src))
+
+CC = gcc
+STRIP=strip
+CFLAGS = -Wall -g 
+
+all:$(targets)
+
+$(targets):%:%.c
+	$(CC) $< -o $@ $(CFLAGS)
+	$(STRIP) $@
+
+.PHONY:clean all
 clean:
-	$(RM) *.o calcu_day
+	-rm -rf $(targets)
+

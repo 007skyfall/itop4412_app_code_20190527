@@ -1,11 +1,17 @@
-CC=gcc 
-OBJ=print_alp
-OBJS=print_alp.c 
-CFLAGS= -Wall -g -static 
-$(OBJ):$(OBJS)
-	$(CC) $(CFLAGS) $^ -o $@
-$*.o:$%.c
-	$(CC) $(CFLAGS) -c $< -o $@ 
-.PHONY:clean
+src = $(wildcard *.c)
+targets = $(patsubst %.c, %, $(src))
+
+CC = gcc
+STRIP=strip
+CFLAGS = -Wall -g 
+
+all:$(targets)
+
+$(targets):%:%.c
+	$(CC) $< -o $@ $(CFLAGS)
+	$(STRIP) $@
+
+.PHONY:clean all
 clean:
-	$(RM) *.o print_alp
+	-rm -rf $(targets)
+

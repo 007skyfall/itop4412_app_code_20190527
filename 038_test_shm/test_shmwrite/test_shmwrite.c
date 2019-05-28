@@ -5,21 +5,22 @@
 #include <sys/shm.h>  
 #include "shmdata.h"  
   
-int main(void)  
+
+int main(int argc,const char *argv[]) 
 {  
     int running = 1;  
     void *shm = NULL;  
     struct shared_use_st *shared = NULL;  
-    char buffer[BUFSIZ + 1];//ÓÃÓÚ±£´æÊäÈëµÄÎÄ±¾  
+    char buffer[BUFSIZ + 1];//ç”¨äºä¿å­˜è¾“å…¥çš„æ–‡æœ¬  
     int shmid;  
-    //´´½¨¹²ÏíÄÚ´æ  
+    //åˆ›å»ºå…±äº«å†…å­˜  
     shmid = shmget((key_t)1234, sizeof(struct shared_use_st), 0666|IPC_CREAT);  
     if(shmid == -1)  
     {  
         fprintf(stderr, "shmget failed\n");  
         exit(EXIT_FAILURE);  
     }  
-    //½«¹²ÏíÄÚ´æÁ¬½Óµ½µ±Ç°½ø³ÌµÄµØÖ·¿Õ¼ä  
+    //å°†å…±äº«å†…å­˜è¿æ¥åˆ°å½“å‰è¿›ç¨‹çš„åœ°å€ç©ºé—´  
     shm = shmat(shmid, (void*)0, 0);  
     if(shm == (void*)-1)  
     {  
@@ -27,27 +28,27 @@ int main(void)
         exit(EXIT_FAILURE);  
     }  
     printf("Memory attached at %p\n", shm);  
-    //ÉèÖÃ¹²ÏíÄÚ´æ  
+    //è®¾ç½®å…±äº«å†…å­˜  
     shared = (struct shared_use_st*)shm;  
-    while(running)//Ïò¹²ÏíÄÚ´æÖĞĞ´Êı¾İ  
+    while(running)//å‘å…±äº«å†…å­˜ä¸­å†™æ•°æ®  
     {  
-        //Êı¾İ»¹Ã»ÓĞ±»¶ÁÈ¡£¬ÔòµÈ´ıÊı¾İ±»¶ÁÈ¡,²»ÄÜÏò¹²ÏíÄÚ´æÖĞĞ´ÈëÎÄ±¾  
+        //æ•°æ®è¿˜æ²¡æœ‰è¢«è¯»å–ï¼Œåˆ™ç­‰å¾…æ•°æ®è¢«è¯»å–,ä¸èƒ½å‘å…±äº«å†…å­˜ä¸­å†™å…¥æ–‡æœ¬  
         while(shared->written == 1)  
         {  
             sleep(1);  
             printf("Waiting...\n");  
         }  
-        //Ïò¹²ÏíÄÚ´æÖĞĞ´ÈëÊı¾İ  
+        //å‘å…±äº«å†…å­˜ä¸­å†™å…¥æ•°æ®  
         printf("Enter some text: ");  
         fgets(buffer, BUFSIZ, stdin);  
         strncpy(shared->text, buffer, TEXT_SZ);  
-        //Ğ´ÍêÊı¾İ£¬ÉèÖÃwrittenÊ¹¹²ÏíÄÚ´æ¶Î¿É¶Á  
+        //å†™å®Œæ•°æ®ï¼Œè®¾ç½®writtenä½¿å…±äº«å†…å­˜æ®µå¯è¯»  
         shared->written = 1;  
-        //ÊäÈëÁËend£¬ÍË³öÑ­»·£¨³ÌĞò£©  
+        //è¾“å…¥äº†endï¼Œé€€å‡ºå¾ªç¯ï¼ˆç¨‹åºï¼‰  
         if(strncmp(buffer, "end", 3) == 0)  
             running = 0;  
     }  
-    //°Ñ¹²ÏíÄÚ´æ´Óµ±Ç°½ø³ÌÖĞ·ÖÀë  
+    //æŠŠå…±äº«å†…å­˜ä»å½“å‰è¿›ç¨‹ä¸­åˆ†ç¦»  
     if(shmdt(shm) == -1)  
     {  
         fprintf(stderr, "shmdt failed\n");  

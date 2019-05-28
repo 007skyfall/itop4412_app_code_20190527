@@ -7,7 +7,7 @@ void handler()
 	printf("hello\n");
 }
 
-int main(void)
+int main(int argc,const char * argv[])
 {
 	int i;
 	signal(SIGALRM,	handler);

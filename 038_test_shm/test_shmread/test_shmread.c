@@ -5,20 +5,21 @@
 #include <sys/shm.h>  
 #include "shmdata.h"  
   
-int main(void)  
+
+int main(int argc,const char *argv[])
 {  
-    int running = 1;//³ÌĞòÊÇ·ñ¼ÌĞøÔËĞĞµÄ±êÖ¾  
-    void *shm = NULL;//·ÖÅäµÄ¹²ÏíÄÚ´æµÄÔ­Ê¼Ê×µØÖ·  
-    struct shared_use_st *shared;//Ö¸Ïòshm  
-    int shmid;//¹²ÏíÄÚ´æ±êÊ¶·û  
-    //´´½¨¹²ÏíÄÚ´æ  
+    int running = 1;//ç¨‹åºæ˜¯å¦ç»§ç»­è¿è¡Œçš„æ ‡å¿—  
+    void *shm = NULL;//åˆ†é…çš„å…±äº«å†…å­˜çš„åŸå§‹é¦–åœ°å€  
+    struct shared_use_st *shared;//æŒ‡å‘shm  
+    int shmid;//å…±äº«å†…å­˜æ ‡è¯†ç¬¦  
+    //åˆ›å»ºå…±äº«å†…å­˜  
     shmid = shmget((key_t)1234, sizeof(struct shared_use_st), 0666|IPC_CREAT);  
     if(shmid == -1)  
     {  
         fprintf(stderr, "shmget failed\n");  
         exit(EXIT_FAILURE);  
     }  
-    //½«¹²ÏíÄÚ´æÁ¬½Óµ½µ±Ç°½ø³ÌµÄµØÖ·¿Õ¼ä  
+    //å°†å…±äº«å†…å­˜è¿æ¥åˆ°å½“å‰è¿›ç¨‹çš„åœ°å€ç©ºé—´  
     shm = shmat(shmid, 0, 0);  
     if(shm == (void*)-1)  
     {  
@@ -26,32 +27,32 @@ int main(void)
         exit(EXIT_FAILURE);  
     }  
     printf("\nMemory attached at %p\n", shm);  
-    //ÉèÖÃ¹²ÏíÄÚ´æ  
+    //è®¾ç½®å…±äº«å†…å­˜  
     shared = (struct shared_use_st*)shm;  
     shared->written = 0;  
-    while(running)//¶ÁÈ¡¹²ÏíÄÚ´æÖĞµÄÊı¾İ  
+    while(running)//è¯»å–å…±äº«å†…å­˜ä¸­çš„æ•°æ®  
     {  
-        //Ã»ÓĞ½ø³ÌÏò¹²ÏíÄÚ´æ¶¨Êı¾İÓĞÊı¾İ¿É¶ÁÈ¡  
+        //æ²¡æœ‰è¿›ç¨‹å‘å…±äº«å†…å­˜å®šæ•°æ®æœ‰æ•°æ®å¯è¯»å–  
         if(shared->written != 0)  
         {  
             printf("You wrote: %s", shared->text);  
             sleep(rand() % 3);  
-            //¶ÁÈ¡ÍêÊı¾İ£¬ÉèÖÃwrittenÊ¹¹²ÏíÄÚ´æ¶Î¿ÉĞ´  
+            //è¯»å–å®Œæ•°æ®ï¼Œè®¾ç½®writtenä½¿å…±äº«å†…å­˜æ®µå¯å†™  
             shared->written = 0;  
-            //ÊäÈëÁËend£¬ÍË³öÑ­»·£¨³ÌĞò£©  
+            //è¾“å…¥äº†endï¼Œé€€å‡ºå¾ªç¯ï¼ˆç¨‹åºï¼‰  
             if(strncmp(shared->text, "end", 3) == 0)  
                 running = 0;  
         }  
-        else//ÓĞÆäËû½ø³ÌÔÚĞ´Êı¾İ£¬²»ÄÜ¶ÁÈ¡Êı¾İ  
+        else//æœ‰å…¶ä»–è¿›ç¨‹åœ¨å†™æ•°æ®ï¼Œä¸èƒ½è¯»å–æ•°æ®  
             sleep(1);  
     }  
-    //°Ñ¹²ÏíÄÚ´æ´Óµ±Ç°½ø³ÌÖĞ·ÖÀë  
+    //æŠŠå…±äº«å†…å­˜ä»å½“å‰è¿›ç¨‹ä¸­åˆ†ç¦»  
     if(shmdt(shm) == -1)  
     {  
         fprintf(stderr, "shmdt failed\n");  
         exit(EXIT_FAILURE);  
     }  
-    //É¾³ı¹²ÏíÄÚ´æ  
+    //åˆ é™¤å…±äº«å†…å­˜  
     if(shmctl(shmid, IPC_RMID, 0) == -1)  
     {  
         fprintf(stderr, "shmctl(IPC_RMID) failed\n");  
